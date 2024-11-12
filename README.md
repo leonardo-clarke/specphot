@@ -1,11 +1,10 @@
 # SpecPhot
 
-A Python package for performing spectrum photometry, designed to simplify and standardize photometric calculations across various datasets.
+A Python package for performing spectrophotometric calculations.
 
 ## Features
-- Convert between f_lambda and f_nu.
-- Perform calculations on spectrophotometric data.
-- Flexible utilities for managing wavelength and flux data.
+- Convert between $f_{\lambda}$ and $f_{\nu}$.
+- Calculate synthetic photometry given a spectrum and a bandpass.
 
 ---
 
