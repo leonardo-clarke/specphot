@@ -1,0 +1,4 @@
+# Common packages
+astropy
+numpy
+matplotlib
