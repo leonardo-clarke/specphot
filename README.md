@@ -3,7 +3,6 @@
 A Python package for performing spectrophotometric calculations.
 
 ## Features
-- Convert between $f_{\lambda}$ and $f_{\nu}$.
 - Calculate synthetic photometry given a spectrum and a bandpass.
 
 ---
