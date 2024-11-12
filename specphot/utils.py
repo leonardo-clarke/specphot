@@ -1,25 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import astropy.units as u
-
-pretty_plot_params = {'font.size': 18, 
-                     'text.usetex': True, 
-                     'font.family': 'STIXGeneral',
-                     'xtick.top': True,
-                     'ytick.right': True,
-                     'xtick.major.size': 10.,
-                     'xtick.minor.size': 5.,
-                     'xtick.major.width': 1.5,
-                     'xtick.minor.width': 1.,
-                     'ytick.major.size': 10.,
-                     'ytick.minor.size': 5.,
-                     'ytick.major.width': 1.5,
-                     'ytick.minor.width': 1.,
-                     'xtick.direction': 'in',
-                     'ytick.direction': 'in',
-                     'xtick.minor.visible': True,
-                     'ytick.minor.visible': True}
-plt.rcParams.update(pretty_plot_params)
 
 class Spectrum:
     def __init__(self, wavelength, flux, flux_err, mask, wavelength_units='um', flux_units='erg/s/cm**2/AA'):
@@ -129,6 +109,8 @@ class Spectrum:
 
         f_filter = (flam_filter * u.Unit('erg/s/cm**2/AA')).to(u.Unit(photometry_units), equivalencies=u.spectral_density(lam_center*u.AA)).value
         e_filter = (flam_filter_error * u.Unit('erg/s/cm**2/AA')).to(u.Unit(photometry_units), equivalencies=u.spectral_density(lam_center*u.AA)).value
-        return f_filter, e_filter
+        lam_center = (lam_center * u.AA).to(u.Unit(filter_wavelength_units)).value
+        
+        return f_filter, e_filter, lam_center
 
     
