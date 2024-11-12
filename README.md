@@ -12,7 +12,7 @@ A Python package for performing spectrophotometric calculations.
 ### From GitHub
 To install the latest version directly from GitHub, run:
 ```bash
-pip install git+https://github.com/<your-username>/specphot.git
+pip install git+https://github.com/leonardo-clarke/specphot.git
 ```
 
 ### With pip
