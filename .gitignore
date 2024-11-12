@@ -1,2 +1,14 @@
+# Ignore build artifacts
+build/
+specphot.egg-info/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+
+# Operating system files
 .DS_Store
-.vscode
