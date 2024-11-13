@@ -25,7 +25,10 @@ class Spectrum:
         """
         self.wavelength = (wavelength * u.Unit(wavelength_units)).to('AA').value
         self.flux = (flux * u.Unit(flux_units)).to('erg/s/cm**2/AA', equivalencies=u.spectral_density(wavelength*u.Unit(wavelength_units))).value
-        self.flux_err = (flux_err * u.Unit(flux_units)).to('erg/s/cm**2/AA', equivalencies=u.spectral_density(wavelength*u.Unit(wavelength_units))).value
+        if flux_err is not None:
+            self.flux_err = (flux_err * u.Unit(flux_units)).to('erg/s/cm**2/AA', equivalencies=u.spectral_density(wavelength*u.Unit(wavelength_units))).value
+        else:
+            self.flux_err = np.zeros_like(self.flux)
         self.mask = mask
         self.wavelength_units = wavelength_units
         self.flux_units = flux_units
@@ -41,6 +44,7 @@ class Spectrum:
         clean_wave = self.wavelength.copy() 
         clean_flux = self.flux.copy()
         clean_error = self.flux_err.copy()
+        
         bad_points = np.isnan(clean_flux) | (self.mask == 1)
 
         clean_flux[bad_points] = np.nanmedian(clean_flux)
