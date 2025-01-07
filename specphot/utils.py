@@ -48,12 +48,12 @@ class Spectrum:
         bad_points = np.isnan(clean_flux) | (self.mask == 1)
 
         clean_flux[bad_points] = np.nanmedian(clean_flux)
-        clean_error[bad_points] = np.nanmedian(clean_error)
+        clean_error[bad_points | np.isnan(clean_error)] = np.nanmedian(clean_error)
 
         # Extrapolate the spectrum to the ends of the filter with the same
         # wavelength sampling as the spectrum
         if filter_min < self.wavelength[0]:
-            extrap_wl = np.linspace(filter_min, self.wavelength[0], np.diff(self.wavelength)[0])
+            extrap_wl = np.arange(filter_min, self.wavelength[0], np.diff(self.wavelength)[0])
             extrap_flux = np.ones(len(extrap_wl)) * np.nanmedian(clean_flux)
             extrap_error = np.ones(len(extrap_wl)) * np.nanmedian(clean_error)
             clean_wave = np.concatenate((extrap_wl, clean_wave))
@@ -61,7 +61,7 @@ class Spectrum:
             clean_error = np.concatenate((extrap_error, clean_error))
 
         if filter_max > self.wavelength[-1]:
-            extrap_wl = np.linspace(self.wavelength[-1], filter_max, np.diff(self.wavelength)[-1])
+            extrap_wl = np.arange(self.wavelength[-1], filter_max, np.diff(self.wavelength)[-1])
             extrap_flux = np.ones(len(extrap_wl)) * np.nanmedian(clean_flux)
             extrap_error = np.ones(len(extrap_wl)) * np.nanmedian(clean_error)
             clean_wave = np.concatenate((clean_wave, extrap_wl))
@@ -96,14 +96,16 @@ class Spectrum:
         e_filter : float
             The error on the synthetic photometry.
         """
-        # Interpolate the filter transmission to the spectrum wavelength array
+        # Clean up nan values and extrapolate the spectrum to the ends of the filter.
         filter_wavelength = (filter_wavelength * u.Unit(filter_wavelength_units)).to('AA').value
         filter_min = np.amin(filter_wavelength); filter_max = np.amax(filter_wavelength)
-        transmission = np.interp(self.wavelength, filter_wavelength, filter_transmission, left=0.0, right=0.0)
+        clean_wave, clean_flux, clean_error = self.clean_spectrum(filter_min, filter_max)
+        
+        # Interpolate the filter curve to the same wavelength sampling as the spectrum
+        transmission = np.interp(clean_wave, filter_wavelength, filter_transmission, left=0.0, right=0.0)
         lam_center = np.average(filter_wavelength, weights=filter_transmission)
 
-        # Clean up nan values and extrapolate the spectrum to the ends of the filter.
-        clean_wave, clean_flux, clean_error = self.clean_spectrum(filter_min, filter_max)
+        
 
         dl = np.concatenate((np.diff(clean_wave), np.array([clean_wave[-1] - clean_wave[-2]])))
         flam_filter = np.sum(clean_flux * transmission * dl) / np.sum(transmission * dl)
