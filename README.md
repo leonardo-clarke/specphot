@@ -1,4 +1,4 @@
-# SpecPhot
+# SpecPhot v0.1.1
 
 A Python package for performing spectrophotometric calculations.
 
